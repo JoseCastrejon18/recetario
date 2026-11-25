@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recetario del tío Ganzo</title>
+  <style>
+    :root {
+      --bg: #faf7f2;
+      --surface: #ffffff;
+      --surface-alt: #f3eee6;
+      --text: #272320;
+      --muted: #6f675f;
+      --accent: #b85038;
+      --accent-hover: #993f2a;
+      --border: #e6dfd5;
+      --shadow: 0 6px 20px rgba(39, 35, 32, 0.06);
+    }
+
+    [data-theme="dark"] {
+      --bg: #171513;
+      --surface: #221f1c;
+      --surface-alt: #2b2723;
+      --text: #f5f0e8;
+      --muted: #a69d92;
+      --accent: #dc6b50;
+      --accent-hover: #e87d63;
+      --border: #36312c;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Georgia", "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    button, input, select, textarea {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .brand p {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    button {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      background: var(--surface-alt);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 2rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-bottom: 1.75rem;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 230px;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.95rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+    }
+
+    .cat-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .cat-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      height: 185px;
+      background: var(--surface-alt);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.78rem;
+    }
+
+    .badge {
+      background: var(--surface-alt);
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .card-meta {
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 13, 11, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+    }
+
+    .detail-img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+    }
+
+    .checklist {
+      margin: 0.6rem 0 1.25rem 1.3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .checklist li {
+      margin-bottom: 0.45rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checklist li.done {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .cooking .checklist li {
+      font-size: 1.18rem;
+      padding: 0.3rem 0;
+    }
+
+    .note-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .field { margin-bottom: 1rem; }
+
+    .field label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .field input[type="text"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.58rem 0.8rem;
+      font-size: 0.92rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .preview-box {
+      margin-top: 0.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .preview-box.show { display: flex; }
+
+    .preview-box img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrap">
+      <div class="brand">
+        <h1>Recetario del tío Ganzo</h1>
+        <p>Colección personal de cocina</p>
+      </div>
+      <div class="toolbar">
+        <button onclick="alternarTema()">🌓 Tema</button>
+        <button onclick="exportarJSON()">📤 Exportar JSON</button>
+        <button onclick="document.getElementById('importarInput').click()">📥 Importar JSON</button>
+        <input type="file" id="importarInput" accept=".json" style="display:none" onchange="importarJSON(event)" />
+        <button class="btn-primary" onclick="abrirModalForm()">+ Nueva receta</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="filters">
+      <input type="text" id="buscador" class="search-input" placeholder="Buscar por título o ingrediente..." oninput="renderizar()" />
+      <div class="cat-list" id="categorias"></div>
+    </section>
+    <section class="grid" id="grid"></section>
+  </main>
+
+  <!-- Modal Detalle -->
+  <div class="modal-bg" id="modalDetalle" onclick="cerrarFondo(event, 'modalDetalle')">
+    <div class="modal" id="contenidoDetalle"></div>
+  </div>
+
+  <!-- Modal Crear / Editar -->
+  <div class="modal-bg" id="modalForm" onclick="cerrarFondo(event, 'modalForm')">
+    <div class="modal">
+      <h2 id="tituloForm" style="margin-bottom:1rem;">Nueva receta</h2>
+      <form onsubmit="guardarReceta(event)">
+        <input type="hidden" id="idReceta" />
+        <div class="field">
+          <label>Nombre del platillo</label>
+          <input type="text" id="titulo" required />
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>Categoría</label>
+            <select id="categoria">
+              <option>Desayunos</option>
+              <option>Comidas</option>
+              <option>Cenas</option>
+              <option>Postres</option>
+              <option>Bebidas</option>
+              <option>Snacks</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Tiempo</label>
+            <input type="text" id="tiempo" placeholder="Ej. 20 min" />
+          </div>
+          <div class="field">
+            <label>Porciones</label>
+            <input type="text" id="porciones" placeholder="Ej. 2 porciones" />
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <label>URL de imagen (opcional)</label>
+            <input type="text" id="imagenUrl" placeholder="https://..." oninput="actualizarVistaPrevia()" />
+          </div>
+          <div class="field">
+            <label>O subir foto desde tu dispositivo</label>
+            <input type="file" id="imagenArchivo" accept="image/*" onchange="leerArchivoImagen(event)" />
+          </div>
+        </div>
+        <div class="preview-box" id="vistaPreviaBox">
+          <img id="vistaPreviaImg" alt="Vista previa" />
+          <span style="font-family:sans-serif; font-size:0.85rem; color:var(--muted);">Vista previa de la foto</span>
+          <button type="button" onclick="limpiarImagen()">Quitar foto</button>
+        </div>
+
+        <div class="field">
+          <label>Ingredientes (uno por línea)</label>
+          <textarea id="ingredientes" rows="5" required></textarea>
+        </div>
+        <div class="field">
+          <label>Preparación (un paso por línea)</label>
+          <textarea id="pasos" rows="5" required></textarea>
+        </div>
+        <div class="field">
+          <label>Notas (opcional)</label>
+          <input type="text" id="notas" />
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:0.6rem; margin-top:1rem;">
+          <button type="button" onclick="cerrarModal('modalForm')">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const RECETAS_INICIALES = [
+      
+    ];
+
+    const STORAGE_KEY = "mi_recetario_v1";
+    const CATEGORIAS = ["Todas", "Favoritas", "Desayunos", "Comidas", "Cenas", "Postres", "Bebidas", "Snacks"];
+    let recetas = [];
+    let catActual = "Todas";
+    let modoCocina = false;
+
+    function cargar() {
+      if (localStorage.getItem("tema_recetario") === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      const guardado = localStorage.getItem(STORAGE_KEY);
+      if (guardado) {
+        recetas = JSON.parse(guardado);
+      } else {
+        recetas = RECETAS_INICIALES;
+        guardar();
+      }
+      renderCategorias();
+      renderizar();
+    }
+
+    function guardar() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(recetas));
+    }
+
+    function alternarTema() {
+      const oscuro = document.documentElement.getAttribute("data-theme") === "dark";
+      document.documentElement.setAttribute("data-theme", oscuro ? "light" : "dark");
+      localStorage.setItem("tema_recetario", oscuro ? "light" : "dark");
+    }
+
+    function renderCategorias() {
+      const cont = document.getElementById("categorias");
+      cont.innerHTML = CATEGORIAS.map(c =>
+        `<button class="cat-btn ${c === catActual ? "active" : ""}" onclick="seleccionarCat('${c}')">${c}</button>`
+      ).join("");
+    }
+
+    function seleccionarCat(cat) {
+      catActual = cat;
+      renderCategorias();
+      renderizar();
+    }
+
+    function renderizar() {
+      const texto = document.getElementById("buscador").value.trim().toLowerCase();
+      const lista = recetas.filter(r => {
+        const matchCat =
+          catActual === "Todas" ||
+          (catActual === "Favoritas" && r.favorita) ||
+          r.categoria === catActual;
+        const matchTexto =
+          !texto ||
+          r.titulo.toLowerCase().includes(texto) ||
+          r.ingredientes.some(i => i.toLowerCase().includes(texto));
+        return matchCat && matchTexto;
+      });
+
+      const grid = document.getElementById("grid");
+      if (!lista.length) {
+        grid.innerHTML = `<p style="color:var(--muted); font-family:sans-serif;">No hay recetas que coincidan con el filtro.</p>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map(r => `
+        <article class="card" onclick="verDetalle('${r.id}')">
+          <div class="card-img-wrap">
+            ${r.imagen
+              ? `<img src="${r.imagen}" alt="${r.titulo}" onerror="this.parentElement.innerHTML='Sin foto disponible'" />`
+              : `<span>Sin foto</span>`}
+          </div>
+          <div class="card-body">
+            <div class="card-top">
+              <span class="badge">${r.categoria}</span>
+              <span>${r.favorita ? "⭐ Favorita" : ""}</span>
+            </div>
+            <h2>${r.titulo}</h2>
+            <div class="card-meta">
+              <span>⏱ ${r.tiempo || "—"}</span>
+              <span>🍽 ${r.porciones || "—"}</span>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function verDetalle(id) {
+      const r = recetas.find(x => x.id === id);
+      if (!r) return;
+      const box = document.getElementById("contenidoDetalle");
+      box.className = modoCocina ? "modal cooking" : "modal";
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span class="badge">${r.categoria}</span>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <button onclick="toggleFav('${r.id}')">${r.favorita ? "⭐" : "☆"} Favorita</button>
+            <button onclick="toggleCocina('${r.id}')">👨‍🍳 ${modoCocina ? "Salir Cocina" : "Modo Cocina"}</button>
+            <button onclick="abrirModalForm('${r.id}')">✏️ Editar</button>
+            <button onclick="borrarReceta('${r.id}')">🗑️</button>
+            <button onclick="cerrarModal('modalDetalle')">✕</button>
+          </div>
+        </div>
+        <h2 style="font-size:1.65rem; margin-top:0.85rem;">${r.titulo}</h2>
+        <p style="font-family:sans-serif; font-size:0.88rem; color:var(--muted);">⏱ ${r.tiempo || "—"} · 🍽 ${r.porciones || "—"}</p>
+        ${r.imagen ? `<img class="detail-img" src="${r.imagen}" alt="${r.titulo}" onerror="this.style.display='none'" />` : ""}
+        <h3 style="margin-top:0.8rem;">Ingredientes</h3>
+        <ul class="checklist">
+          ${r.ingredientes.map(i => `<li onclick="this.classList.toggle('done')">${i}</li>`).join("")}
+        </ul>
+        <h3>Preparación</h3>
+        <ol class="checklist">
+          ${r.pasos.map(p => `<li onclick="this.classList.toggle('done')">${p}</li>`).join("")}
+        </ol>
+        ${r.notas ? `<div class="note-box"><strong>Nota:</strong> ${r.notas}</div>` : ""}
+      `;
+      document.getElementById("modalDetalle").classList.add("open");
+    }
+
+    function toggleCocina(id) {
+      modoCocina = !modoCocina;
+      verDetalle(id);
+    }
+
+    function toggleFav(id) {
+      const r = recetas.find(x => x.id === id);
+      if (!r) return;
+      r.favorita = !r.favorita;
+      guardar();
+      verDetalle(id);
+      renderizar();
+    }
+
+    function abrirModalForm(id = null) {
+      cerrarModal("modalDetalle");
+      const r = id ? recetas.find(x => x.id === id) : null;
+      document.getElementById("tituloForm").textContent = r ? "Editar receta" : "Nueva receta";
+      document.getElementById("idReceta").value = r ? r.id : "";
+      document.getElementById("titulo").value = r ? r.titulo : "";
+      document.getElementById("categoria").value = r ? r.categoria : "Comidas";
+      document.getElementById("tiempo").value = r ? (r.tiempo || "") : "";
+      document.getElementById("porciones").value = r ? (r.porciones || "") : "";
+      document.getElementById("imagenUrl").value = r ? (r.imagen || "") : "";
+      document.getElementById("imagenArchivo").value = "";
+      document.getElementById("ingredientes").value = r ? r.ingredientes.join("\n") : "";
+      document.getElementById("pasos").value = r ? r.pasos.join("\n") : "";
+      document.getElementById("notas").value = r ? (r.notas || "") : "";
+      actualizarVistaPrevia();
+      document.getElementById("modalForm").classList.add("open");
+    }
+
+    function leerArchivoImagen(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxAncho = 800;
+          const escala = img.width > maxAncho ? maxAncho / img.width : 1;
+          canvas.width = Math.round(img.width * escala);
+          canvas.height = Math.round(img.height * escala);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          document.getElementById("imagenUrl").value = canvas.toDataURL("image/jpeg", 0.8);
+          actualizarVistaPrevia();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function actualizarVistaPrevia() {
+      const val = document.getElementById("imagenUrl").value.trim();
+      const box = document.getElementById("vistaPreviaBox");
+      const img = document.getElementById("vistaPreviaImg");
+      if (val) {
+        img.src = val;
+        box.classList.add("show");
+      } else {
+        img.src = "";
+        box.classList.remove("show");
+      }
+    }
+
+    function limpiarImagen() {
+      document.getElementById("imagenUrl").value = "";
+      document.getElementById("imagenArchivo").value = "";
+      actualizarVistaPrevia();
+    }
+
+    function guardarReceta(e) {
+      e.preventDefault();
+      const id = document.getElementById("idReceta").value;
+      const existente = id ? recetas.find(x => x.id === id) : null;
+      const nueva = {
+        id: id || "r-" + Date.now(),
+        titulo: document.getElementById("titulo").value.trim(),
+        categoria: document.getElementById("categoria").value,
+        tiempo: document.getElementById("tiempo").value.trim(),
+        porciones: document.getElementById("porciones").value.trim(),
+        favorita: existente ? existente.favorita : false,
+        imagen: document.getElementById("imagenUrl").value.trim(),
+        ingredientes: document.getElementById("ingredientes").value.split("\n").map(s => s.trim()).filter(Boolean),
+        pasos: document.getElementById("pasos").value.split("\n").map(s => s.trim()).filter(Boolean),
+        notas: document.getElementById("notas").value.trim()
+      };
+
+      if (existente) {
+        Object.assign(existente, nueva);
+      } else {
+        recetas.unshift(nueva);
+      }
+      guardar();
+      cerrarModal("modalForm");
+      renderizar();
+    }
+
+    function borrarReceta(id) {
+      if (!confirm("¿Eliminar esta receta?")) return;
+      recetas = recetas.filter(x => x.id !== id);
+      guardar();
+      cerrarModal("modalDetalle");
+      renderizar();
+    }
+
+    function exportarJSON() {
+      const blob = new Blob([JSON.stringify(recetas, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recetas-respaldo.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importarJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const datos = JSON.parse(ev.target.result);
+          if (!Array.isArray(datos)) throw new Error("Formato inválido");
+          recetas = datos;
+          guardar();
+          renderizar();
+          alert("Recetas importadas correctamente.");
+        } catch {
+          alert("El archivo JSON no tiene un formato válido.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    }
+
+    function cerrarModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    function cerrarFondo(e, id) {
+      if (e.target.id === id) cerrarModal(id);
+    }
+
+    cargar();
+  </script>
+</body>
+</html>
