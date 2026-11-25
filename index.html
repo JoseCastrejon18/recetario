@@ -480,13 +480,9 @@
       if (localStorage.getItem("tema_recetario") === "dark") {
         document.documentElement.setAttribute("data-theme", "dark");
       }
-      const guardado = localStorage.getItem(STORAGE_KEY);
-      if (guardado) {
-        recetas = JSON.parse(guardado);
-      } else {
-        recetas = RECETAS_INICIALES;
-        guardar();
-      }
+      localStorage.removeItem(STORAGE_KEY);
+      recetas = RECETAS_INICIALES;
+      guardar();
       renderCategorias();
       renderizar();
     }
